@@ -113,6 +113,7 @@ void Info::rpsUpdate() {
         }
         curl_easy_cleanup(curl);
         buffer.clear();
+      //  _rps = this->_net_receive;
     }
 }
 
