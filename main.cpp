@@ -132,8 +132,9 @@ int main(int argc, char *argv[]) {
 
     info.update();
     pthread_t thread;
+    const int time_sleep = 5;
     while(true){
-        sleep(1);
+        sleep(time_sleep);
         pthread_create(&thread, NULL, run_thread, &_url);
     }
     return 0;
