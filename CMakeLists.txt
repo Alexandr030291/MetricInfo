@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.6)
 project(MetricInfo)
 
 link_libraries(-lcurl)
+link_libraries(-lpthread)
 
 set(CMAKE_CXX_STANDARD 11)
 

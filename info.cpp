@@ -27,6 +27,8 @@ static int writer(char *data, size_t size, size_t nmemb, string *buffer) {
 
 
 void Info::netUpdate(){
+    _net_receive_old = _net_receive;
+    _net_transmit_old = _net_transmit;
     std::ifstream stat_file("/proc/net/dev");
     if (!stat_file.is_open()){
         std::cout << "Unable to open /proc/net/dev" << std::endl;
@@ -66,9 +68,10 @@ void Info::cpuUpdate() {
         std::cout << "Unable to open /proc/stat" << std::endl;
         return;
     }
-    char _tmp[50];
+    char *_tmp= (char*)malloc(50);
     stat_file >> _tmp;
     long  val=0;
+    _cpu_work=0;
     for (int i = 0 ; i < 4 ; i++) {
         stat_file >> _tmp;
         val= atol(_tmp);
@@ -76,6 +79,7 @@ void Info::cpuUpdate() {
     }
     _cpu_busy=_cpu_work-val;
     stat_file.close();
+    free(_tmp);
 }
 
 void Info::rpsUpdate() {
@@ -123,6 +127,7 @@ void Info::memUpdate() {
     stat_file >> _tmp;
     stat_file >> _tmp;
     _mem_total =  atol(_tmp);
+    _mem_free = 0;
     for (int i = 0 ; i < 3 ; i++) {
         stat_file >> _tmp; stat_file>> _tmp; stat_file >> _tmp;
         _mem_free += atol(_tmp);
@@ -138,11 +143,11 @@ void Info::infoUpdate() {
     char net_json[len_buffer] = {'\0'};
     char rps_json[len_buffer] = {'\0'};
     char time_json[len_buffer] = {'\0'};
-    sprintf(cpu_json,"\"cpu\":{\"busy\":%lu,\"work\":%lu}",_cpu_busy-_cpu_busy_old,_cpu_work-_cpu_work_old);
+    sprintf(cpu_json,"\"cpu\":{\"busy\":%ld,\"work\":%ld}",_cpu_busy-_cpu_busy_old,_cpu_work-_cpu_work_old);
     sprintf(rps_json,"\"rps\": %lu",_rps-_rps_old);
-    sprintf(mem_json,"\"mem\":{\"free\":%lu,\"total\":%lu}",_mem_free,_mem_total);
-    sprintf(net_json,"\"net\":{\"receive\":%lu, \"transmit\":%lu}",_net_receive,_net_transmit);
-    sprintf(time_json,"\"time\":%lu" ,_sys_time);
+    sprintf(mem_json,"\"mem\":{\"free\":%ld,\"total\":%ld}",_mem_free,_mem_total);
+    sprintf(net_json,"\"net\":{\"receive\":%ld, \"transmit\":%ld}",_net_receive_old-_net_receive,-_net_transmit_old+_net_transmit);
+    sprintf(time_json,"\"time\":%ld" ,_sys_time);
     if (!_info)
         free (_info);
     _info = (char*) malloc(strlen(cpu_json)+strlen(json)+strlen(mem_json)+strlen(net_json)+strlen(rps_json)+strlen(time_json)+1);

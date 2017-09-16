@@ -13,6 +13,8 @@ private:
 
     long _net_receive;
     long _net_transmit;
+    long _net_receive_old;
+    long _net_transmit_old;
 
     long _rps;
     long _rps_old;

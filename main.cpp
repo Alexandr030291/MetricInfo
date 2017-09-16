@@ -89,9 +89,9 @@ int sendPost(char * url,char * http_request) {
     return 0;
 }
 
-int requestPost(URL url) {
+int requestPost(URL * url) {
     const char _info_url[]="db/api/info";
-    char *_url=toUrl(url.host,url.port);
+    char *_url=toUrl(url->host,url->port);
     char *_url_path= (char*) malloc(strlen(_url)+strlen(_info_url)+5);
     sprintf(_url_path,"%s/%s",_url,_info_url);
     sendPost(_url_path,info.getInfo());
@@ -115,14 +115,10 @@ int namePost(URL url) {
     return 0;
 }
 
-
-long getTime(){
-    const time_t timer = time(NULL);
-    long time = timer;
-    return time;
+void* run_thread(void * url){
+    info.update();
+    requestPost((URL*) url);
 }
-
-
 
 int main(int argc, char *argv[]) {
     URL _url = settings(argc, argv);
@@ -134,14 +130,11 @@ int main(int argc, char *argv[]) {
     else
         return 2;
 
-    long time = getTime();
     info.update();
+    pthread_t thread;
     while(true){
-        if (time-getTime()==0)
-            continue;
-        info.update();
-        requestPost(_url);
-        time = getTime();
+        sleep(1);
+        pthread_create(&thread, NULL, run_thread, &_url);
     }
     return 0;
 }
