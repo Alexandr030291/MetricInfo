@@ -103,7 +103,34 @@ void Info::rpsUpdate() {
                 cout << "server start: " << ctime(&_sys_time) << endl;
                 _server_active = true;
             }
-            _rps = atol(buffer.data());
+            if (_flag) {
+                size_t len = 128;
+                char *tmp = (char *) malloc(len);
+                int start = 0;
+                int stop = 0;
+                int spase = 12;
+                const char * _buffer = buffer.data();
+                while (spase > 0) {
+                    start = stop;
+                    char c;
+                   do{
+                        c = buffer.data()[stop];
+                        stop++;
+                    } while (c != '\0' && c != ' ' && c != '\n');
+                    if (c == '\0') {
+                        break;
+                    }
+                   // memset(tmp,'\0',len);
+                   // strncpy(tmp, buffer.data() + start, (size_t) (stop - start));
+                    spase--;
+                }
+                memset(tmp,'\0',len);
+                strncpy(tmp, buffer.data() + start, (size_t) (stop - start));
+                _rps = atol(tmp)-1;
+                free(tmp);
+            }else {
+                _rps = atol(buffer.data());
+            }
         } else if (_server_active) {
             timeUpdate();
             cout << "server stop: " << ctime(&_sys_time) << endl;
@@ -167,6 +194,7 @@ Info::Info() {
     _rps_location = nullptr;
     _info = nullptr;
     _server_active = false;
+    _flag=0;
 }
 
 Info::~Info() {
@@ -189,4 +217,8 @@ void Info::update() {
     netUpdate();
     timeUpdate();
     infoUpdate();
+}
+
+void Info::set_flag(int _flag) {
+    Info::_flag = _flag;
 }

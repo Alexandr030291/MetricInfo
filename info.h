@@ -24,6 +24,7 @@ private:
     char * _rps_location;
 
     char * _info;
+    int _flag;
 
     bool _server_active;
 
@@ -38,6 +39,9 @@ public:
     virtual ~Info();
     void update();
     void set_rps_location(const char *_rps_location);
+
+    void set_flag(int _flag);
+
     char * getInfo();
 };
 

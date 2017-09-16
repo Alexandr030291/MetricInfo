@@ -28,13 +28,15 @@ char * toUrl(const char * root_path, int port) {
 URL settings(int argc, char *argv[]){
     int i = 1;
     URL addr;
-    char port[10] = "0";
+    char buffer[10] = "0";
+    addr.port=atoi(buffer);
     addr.host= nullptr;
     if (argc >= 2 && strcmp(argv[i], "-h") == 0) {
         std::cout << "-a  " << "site directory" << std::endl;
         std::cout << "-p  " << "port" << std::endl;
         std::cout << "-r  " << "rps address" << std::endl;
         std::cout << "-n  " << "name server" << std::endl;
+        std::cout << "-f  " << "ngix server" << std::endl;
         return addr;
     }
     while ((argc - i) > 1) {
@@ -42,7 +44,9 @@ URL settings(int argc, char *argv[]){
             addr.host = (char *) malloc(strlen(argv[i + 1]) + 1);
             strcpy(addr.host, argv[i + 1]);
         }else if (strcmp(argv[i], "-p") == 0) {
-            strcpy(port, argv[i + 1]);
+            memset(buffer,'\0',strlen(buffer));
+            strcpy(buffer, argv[i + 1]);
+            addr.port=atoi(buffer);
         }else if (strcmp(argv[i], "-r") == 0) {
             char *rps_path = (char *) malloc(strlen(argv[i + 1]) + 1);
             strcpy(rps_path, argv[i + 1]);
@@ -52,9 +56,13 @@ URL settings(int argc, char *argv[]){
             server_name = (char *) malloc(strlen(argv[i + 1]) + 1);
             strcpy(server_name, argv[i + 1]);
         }
+        else if (strcmp(argv[i], "-f") == 0) {
+            memset(buffer,'\0',strlen(buffer));
+            strcpy(buffer, argv[i + 1]);
+            info.set_flag(atoi(buffer));
+        }
         i += 2;
     }
-    addr.port=atoi(port);
     return addr;
 }
 
