@@ -1,3 +1,5 @@
-example:
+git clone git://github.com/Alexandr030291/MetricInfo.git
+cd /MetricInfo
+cmake CMakeLists.txt
 
 nohup ./MetricInfo -a "127.0.0.1" -p 5001 -r "127.0.0.1:5000/db/api/rps" -n Server1 >log.txt 2> errors.txt < /dev/null &
