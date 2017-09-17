@@ -103,7 +103,7 @@ void Info::rpsUpdate() {
                 cout << "server start: " << ctime(&_sys_time) << endl;
                 _server_active = true;
             }
-            if (_flag) {
+            if (_flag==1) {
                 size_t len = 128;
                 char *tmp = (char *) malloc(len);
                 int start = 0;
