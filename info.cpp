@@ -126,7 +126,7 @@ void Info::rpsUpdate() {
                 }
                 memset(tmp,'\0',len);
                 strncpy(tmp, buffer.data() + start, (size_t) (stop - start));
-                _rps = atol(tmp)-1;
+                _rps = atol(tmp);
                 free(tmp);
             }else {
                 _rps = atol(buffer.data());
