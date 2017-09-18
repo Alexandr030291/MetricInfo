@@ -139,9 +139,9 @@ void Info::rpsUpdate() {
             _server_active = false;
         }
         curl_easy_cleanup(curl);
-        buffer.clear();
       //  _rps = this->_net_receive;
     }
+    buffer.clear();
 }
 
 
